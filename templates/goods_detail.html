@@ -1,0 +1,174 @@
+{% extends 'base_main.html' %}
+
+
+{% block js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="/static/js/jquery_form.js"></script>
+
+{% endblock %}
+
+
+{% block content %}
+<style>
+    .dataStatistic{width:400px;height:200px;border:1px solid #ccc;margin:0 auto;margin:10px;overflow:hidden}
+    #cylindrical{width:400px;height:200px;margin-top:-15px}
+    #line{width:400px;height:200px;margin-top:-15px}
+    #pie{width:400px;height:200px;margin-top:-15px}
+    </style>
+
+
+
+<section class="rt_wrap mCustomScrollbar">
+
+    <div class="rt_content">
+        <div class="page_title">
+            <h2 class="fl">商品详情</h2>
+            <a class="fr top_rt_btn" href="/admin_goods/goods_list/1/">返回商品列表</a>
+        </div>
+        <form action="" method="post" enctype="multipart/form-data" id="date_form">
+            {% csrf_token %}
+            <script>
+                $(document).ready(function() {
+                   $("#date_form").ajaxForm(function(data){
+                         alert("post success." + data.message);
+                         //Alert("post success.");
+                   });
+                });
+            </script>
+            <section>
+                <ul class="ulColumn2">
+                    <li>
+                        <span class="item_name" style="width:120px;">商品名称：</span>
+                        <input type="text" name="name" value="" class="textbox textbox_295" placeholder="商品名称..."/>
+
+                    </li>
+                    <li>
+                        <span class="item_name" style="width:120px;">商品货号：</span>
+                        <input type="text" name="goods_sn" value=""  class="textbox" placeholder="商品货号..."/>
+
+                    </li>
+                    <li>
+                        <span class="item_name" style="width:120px;">分类：</span>
+                        <select class="select" name="category_id">
+
+                                <option value="1">新鲜水果</option>
+
+                                <option value="2">海鲜水产</option>
+
+                                <option value="3">猪牛羊肉</option>
+
+                                <option value="4">禽类蛋品</option>
+
+                                <option value="5">新鲜蔬菜</option>
+
+                                <option value="6">速冻食品</option>
+
+                        </select>
+
+                    </li>
+                    <li>
+                        <span class="item_name" style="width:120px;">商品库存：</span>
+                        <input type="text" name="goods_nums" value=""  class="textbox textbox_295" placeholder="商品库存..."/>
+
+                    </li>
+                    <li>
+                        <span class="item_name" style="width:120px;">市场价格：</span>
+                        <input type="text" name="market_price" value="" class="textbox textbox_295" placeholder="市场价格..."/>
+
+                    </li>
+                    <li>
+                        <span class="item_name" style="width:120px;">本店价格：</span>
+                        <input type="text" name="shop_price" value="" class="textbox textbox_295" placeholder="本店价格..."/>
+
+                    </li>
+                    <li>
+                        <span class="item_name" style="width:120px;">商品简短描述：</span>
+                        <input type="text" name="goods_brief" value="" class="textbox textbox_295" placeholder="商品简短描述..."/>
+
+                    </li>
+                    <li>
+                        <span class="item_name" style="width:120px">
+                        <select class="select" name="upload_method" id="upload_method" style="border-color: deepskyblue">
+
+                                <option value="1">本地图片></option>
+
+                                <option value="2">网络图片></option></select><br></br>上传商品首图：
+                        </span>
+                        <script>
+                            $('#upload_method').on('change',function () {
+                                var method = parseInt($('#upload_method').val())
+                                if (method == 1) {
+                                    $('#local_image').css('display','inline-block')
+                                    $('#image_url').css('display','none')
+                                    $('#show_image').css('display', 'none')
+                                    $('#image_url').val('')
+                                } else {
+                                    $('#local_image').css('display','none')
+                                    $('#image_url').css('display','inline-block')
+                                    $('#show_image').css('display', 'none')
+                                    $('#goods_front_image')[0].value = ''
+
+                                }
+                            })
+                        </script>
+                        <input type="text" name="image_url" id="image_url" value="" class="textbox textbox_295" placeholder="图片网络地址..." style="display: none"/>
+                        <script>
+                            $('#image_url').on('blur',function () {
+                                if ($('#upload_method').val() ==2){
+                                    var img_url = $('#image_url').val()
+
+                                    if (img_url) {
+                                        $('#show_image').css('display', 'inline-block')
+                                        $("#img_preview").attr("src", img_url);
+                                    } else {
+                                        $('#show_image').css('display', 'none')
+                                        $("#img_preview").attr("src", '');
+                                    }
+                                }
+                            })
+                        </script>
+                        <label class="uploadImg" style="display: inline-block" id="local_image">
+                             <input type="file" name="goods_front_image" id="goods_front_image"/>
+                             <span>上传图片</span>
+                        </label>
+                        <div  style="width:100px;height:100px;display:none" id="show_image">
+                            <p style="position: relative;">缩略图:</p>
+                        <img src="" id="img_preview" style="width: 100px;height:100px;position: relative;left: 50px;top: -13px" >
+                        </div>
+
+                    </li>
+                    <script>
+                        //上传图片选择文件改变后刷新预览图
+                        $("#goods_front_image").change(function (e) {
+                        //获取目标文件
+                        var file = e.target.files || e.dataTransfer.files;
+                        //如果目标文件存在
+                        if (file) {
+                            //定义一个文件阅读器
+                            var reader = new FileReader();
+                            //文件装载后将其显示在图片预览里
+                            reader.onload = function () {
+                                $('#show_image').css('display', 'inline-block')
+                                $("#img_preview").attr("src", this.result);
+                            }
+                            //装载文件
+                            reader.readAsDataURL(file[0]);
+                        }
+                        });
+                    </script>
+                    <li>
+                        <span class="item_name" style="width:120px;">产品详情：</span>
+
+                        <textarea id="editor_id" name="goods_desc" style="width:400px;height:150px;"></textarea>
+                    </li>
+                    <li>
+                        <span class="item_name" style="width:120px;"></span>
+                        <input type="submit" class="link_btn"/>
+                    </li>
+                </ul>
+            </section>
+        </form>
+    </div>
+</section>
+{% endblock %}

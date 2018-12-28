@@ -1,0 +1,119 @@
+{% extends 'base_main.html' %}
+
+
+
+{% block content %}
+<style>
+    .dataStatistic{width:400px;height:200px;border:1px solid #ccc;margin:0 auto;margin:10px;overflow:hidden}
+    #cylindrical{width:400px;height:200px;margin-top:-15px}
+    #line{width:400px;height:200px;margin-top:-15px}
+    #pie{width:400px;height:200px;margin-top:-15px}
+    </style>
+
+
+
+
+<section class="rt_wrap content mCustomScrollbar">
+    <div class="rt_content">
+        <div class="page_title">
+            <h2 class="fl">商品列表</h2>
+            <a href="/admin_goods/add_goods/" class="fr top_rt_btn add_icon">添加商品</a>
+        </div>
+        <table class="table">
+            <tr>
+                <th>缩略图</th>
+                <th>产品名称</th>
+                <th>商品类型</th>
+                <th>货号</th>
+                <th>市场单价</th>
+                <th>本店单价</th>
+                <th>库存</th>
+                <th>详情</th>
+                <th>操作</th>
+            </tr>
+                {% for goods in goods_list %}
+                <tr>
+                    <td class="center"><img src="{{ goods.goods_front_image }}" width="50" height="50" alt="" /></td>
+                    <td class="center" style="height: ">{{ goods.name }}</td>
+                    <td class="center">
+                        {% if goods.category_id == 1 %}
+                            新鲜水果
+                        {% elif goods.category_id == 2 %}
+                            海鲜水产
+                        {% elif goods.category_id == 3 %}
+                            猪牛羊肉
+                        {% elif goods.category_id == 4 %}
+                            禽类蛋品
+                        {% elif goods.category_id == 5 %}
+                            新鲜蔬菜
+                        {% elif goods.category_id == 6 %}
+                            速冻食品
+                        {% endif %}
+                    </td>
+                    <td class="center">{{ goods.id }}</td>
+                    <td class="center"><strong class="rmb_icon">{{ goods.market_price }}</strong></td>
+                    <td class="center"><strong class="rmb_icon">{{ goods.shop_price }}</strong></td>
+                    <td class="center">{{ goods.goods_nums }}</td>
+                    <td class="center">
+                        <a href="/admin_goods/edit_goods/{{ goods.id }}/">描述</a>
+                    </td>
+                    <td class="center">
+                        <a href="/admin_goods/edit_goods/{{ goods.id }}/" title="编辑" class="link_icon">&#101;</a>
+                        <a onclick="delete_goods({{ goods.id }},'{{ goods.name }}')" title="删除" class="link_icon">&#100;</a>
+                        {% csrf_token %}
+                        <script>
+                            function delete_goods(goods_id,goods_name) {
+                                if (confirm('是否要删除-'+goods_name+'?')) {
+                                    var csrf = $('input[name="csrfmiddlewaretoken"]').val()
+                                    $.ajax({
+                                        url: '/admin_goods/remove_goods/',
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        headers: {'X-CSRFToken': csrf},
+                                        data: {'goods_id': goods_id},
+                                        success: function(data){
+                                            if(data.code == '200'){
+                                                alert('删除成功！');
+                                                location.reload();
+                                            }
+                                        },
+                                        error: function(data){
+                                            alert('删除失败！')
+                                        }
+                                    })
+                                }
+                            }
+                        </script>
+                    </td>
+                </tr>
+                {% endfor %}
+        </table>
+        <aside class="paging">
+            <p style="position: relative;top: 20px;width: 160px;">当前在第<input type="text" value="{{ page }}" style="width: 30px" id="jump_page">页 <button onclick="jump()">跳转</button></p>
+        <script>
+            function jump() {
+                var jump_page = parseInt($('#jump_page').val())
+                if (jump_page>0 && jump_page <= {{ max_page }})
+                    window.location.href = '/admin_goods/goods_list/'+jump_page+'/'
+            }
+        </script>
+            {% if page > 1 %}
+            <a href="/admin_goods/goods_list/1/">首页</a>
+            <a href="/admin_goods/goods_list/{{ page|add:-1 }}/">上一页</a>
+            {% endif %}
+            {% for page_num in page_list %}
+                <a href="/admin_goods/goods_list/{{ page_num }}/"> {{ page_num }} </a>
+            {% endfor %}
+            {% if page < max_page %}
+                <a href="/admin_goods/goods_list/{{ page|add:1 }}">下一页</a>
+            {% endif %}
+            <a href="/admin_goods/goods_list/{{ max_page }}/">最后一页</a>
+        </aside>
+    </div>
+</section>
+
+{% endblock %}
+
+
+
+

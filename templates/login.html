@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    天天生鲜-后台登录
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <style>
+        body{height:100%;background:#16a085;overflow:hidden;}
+        canvas{z-index:-1;position:absolute;}
+    </style>
+{% endblock %}
+
+{% block js %}
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/verificationNumbers.js"></script>
+<script src="/static/js/Particleground.js"></script>
+<script>
+$(document).ready(function() {
+  //粒子背景特效
+  $('body').particleground({
+    dotColor: '#5cbdaa',
+    lineColor: '#5cbdaa'
+  });
+  //验证码
+
+    {#createCode();#}
+  //测试提交，对接程序删除即可
+  $(".submit_btn").click(function(){
+	  console.log($('input[placeholder="账号"]').val());
+	  console.log($('input[placeholder="密码"]').val());
+	  });
+});
+</script>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <dl class="admin_login">
+     <dt>
+      <strong>站点后台管理系统</strong>
+      <em>Management System</em>
+     </dt>
+        <form action="" method="post">
+             {% csrf_token %}
+            <dd class="user_icon">
+          <input type="text"
+                name="username" placeholder="账号" class="login_txtbx"/>
+         </dd>
+         <dd class="pwd_icon">
+          <input type="password" name="pwd" placeholder="密码" class="login_txtbx"/>
+         </dd>
+         <dd>
+          <input type="submit" value="立即登录" class="submit_btn"/>
+             </form>
+     </dd>
+     <dd>
+      <p>© 2018-2019 DeathGhost 版权所有</p>
+      <p>陕B2-20080224-1</p>
+     </dd>
+    </dl>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block endjs %}
+{% endblock %}

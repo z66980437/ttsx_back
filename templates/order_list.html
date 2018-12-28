@@ -1,0 +1,68 @@
+{% extends 'base_main.html' %}
+
+{% block content %}
+<style>
+    .dataStatistic{width:400px;height:200px;border:1px solid #ccc;margin:0 auto;margin:10px;overflow:hidden}
+    #cylindrical{width:400px;height:200px;margin-top:-15px}
+    #line{width:400px;height:200px;margin-top:-15px}
+    #pie{width:400px;height:200px;margin-top:-15px}
+    </style>
+
+
+
+
+<section class="rt_wrap content mCustomScrollbar">
+    <div class="rt_content">
+        <div class="page_title">
+            <h2 class="fl">订单列表</h2>
+        </div>
+        <table class="table">
+            <tr>
+                <th>订单编号</th>
+                <th>收件人</th>
+                <th>联系电话</th>
+                <th>收件人地址</th>
+                <th>订单金额</th>
+                <th>配送方式</th>
+                <!--<th>操作</th>-->
+            </tr>
+            {% for order in orders %}
+                <tr>
+                    <td class="center">{{ order.id }}</td>
+                    <td>{{ order.signer_name }}</td>
+                    <td>{{ order.signer_mobile }}</td>
+                    <td>
+                        <address>{{ order.address }}</address>
+                    </td>
+                    <td class="center"><strong class="rmb_icon">{{  order.order_mount}}</strong></td>
+                    <td class="center">申通快递</td>
+                    <!--<td class="center">-->
+                        <!--<a href="#" title="查看订单" class="link_icon" target="_blank">&#118;</a>-->
+                    <!--</td>-->
+                </tr>
+            {% endfor %}
+        </table>
+        <aside class="paging">
+            <p style="position: relative;top: 20px;width: 160px;">当前在第<input type="text" value="{{ page }}" style="width: 30px" id="jump_page">页 <button onclick="jump()">跳转</button></p>
+        <script>
+            function jump() {
+                var jump_page = parseInt($('#jump_page').val())
+                if (jump_page>0 && jump_page <= {{ max_page }})
+                    window.location.href = '/admin_order/order_list/'+jump_page+'/'
+            }
+        </script>
+            {% if page > 1 %}
+            <a href="/admin_order/order_list/1/">首页</a>
+            <a href="/admin_order/order_list/{{ page|add:-1 }}/">上一页</a>
+            {% endif %}
+            {% for page_num in page_list %}
+                <a href="/admin_order/order_list/{{ page_num }}/"> {{ page_num }} </a>
+            {% endfor %}
+            {% if page < max_page %}
+                <a href="/admin_order/order_list/{{ page|add:1 }}">下一页</a>
+            {% endif %}
+            <a href="/admin_order/order_list/{{ max_page }}/">最后一页</a>
+        </aside>
+    </div>
+</section>
+{% endblock %}

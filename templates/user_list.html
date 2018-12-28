@@ -1,0 +1,84 @@
+{% extends 'base_main.html' %}
+
+{% block content %}
+<style>
+    .dataStatistic{width:400px;height:200px;border:1px solid #ccc;margin:0 auto;margin:10px;overflow:hidden}
+    #cylindrical{width:400px;height:200px;margin-top:-15px}
+    #line{width:400px;height:200px;margin-top:-15px}
+    #pie{width:400px;height:200px;margin-top:-15px}
+    </style>
+
+<section class="rt_wrap content mCustomScrollbar">
+ <div class="rt_content">
+      <div class="page_title">
+       <h2 class="fl">会员列表</h2>
+       <a href="user_detail.html" class="fr top_rt_btn add_icon">添加新会员</a>
+      </div>
+      <section class="mtb">
+       <select class="select">
+        <option>会员等级</option>
+        <option>普通会员</option>
+        <option>高级会员</option>
+       </select>
+       <input type="text" class="textbox textbox_225" placeholder="输入会员号/手机/电子邮件查询..."/>
+       <input type="button" value="查询" class="group_btn"/>
+      </section>
+      <table class="table">
+       <tr>
+        <th>Id</th>
+        <th>会员头像</th>
+        <th>会员账号</th>
+        <th>手机号码</th>
+        <th>电子邮件</th>
+        <th>验证</th>
+        <th>会员等级</th>
+        <th>账户余额</th>
+        <th>冻结资金</th>
+        <th>操作</th>
+       </tr>
+       {% for user in users_list %}
+       <tr>
+        <td class="center">{{ user.id }}</td>
+        <td class="center"><img src="" width="50" height="50"/></td>
+        <td>{{ user.username }}</td>
+        <td class="center">{{ user.mobile }}</td>
+        <td class="center">{{ user.email }}</td>
+        <td class="center"><a title="已验证" class="link_icon">&#89;</a></td>
+        <td class="center">普通会员</td>
+        <td class="center">
+         <strong class="rmb_icon">5559.00</strong>
+        </td>
+        <td class="center">
+         <strong class="rmb_icon">59.00</strong>
+        </td>
+        <td class="center">
+         <a href="user_detail.html" title="编辑" class="link_icon">&#101;</a>
+         <a href="#" title="删除" class="link_icon">&#100;</a>
+        </td>
+       </tr>
+       {% endfor %}
+      </table>
+      <aside class="paging">
+            <p style="position: relative;top: 20px;width: 160px;">当前在第<input type="text" value="{{ page }}" style="width: 30px" id="jump_page">页 <button onclick="jump()">跳转</button></p>
+        <script>
+            function jump() {
+                var jump_page = parseInt($('#jump_page').val())
+                if (jump_page>0 && jump_page <= {{ max_page }})
+                    window.location.href = '/admin/user_list/'+jump_page+'/'
+            }
+        </script>
+            {% if page > 1 %}
+            <a href="/admin/user_list/1/">首页</a>
+            <a href="/admin/user_list/{{ page|add:-1 }}/">上一页</a>
+            {% endif %}
+            {% for page_num in page_list %}
+                <a href="/admin/user_list/{{ page_num }}/"> {{ page_num }} </a>
+            {% endfor %}
+            {% if page < max_page %}
+                <a href="/admin/user_list/{{ page|add:1 }}">下一页</a>
+            {% endif %}
+            <a href="/admin/user_list/{{ max_page }}/">最后一页</a>
+        </aside>
+ </div>
+</section>
+{% endblock %}

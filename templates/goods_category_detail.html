@@ -1,0 +1,135 @@
+{% extends 'base_main.html' %}
+
+
+{% block content %}
+    <style>
+    .dataStatistic{width:400px;height:200px;border:1px solid #ccc;margin:0 auto;margin:10px;overflow:hidden}
+    #cylindrical{width:400px;height:200px;margin-top:-15px}
+    #line{width:400px;height:200px;margin-top:-15px}
+    #pie{width:400px;height:200px;margin-top:-15px}
+    </style>
+
+
+
+<section class="rt_wrap mCustomScrollbar">
+
+    <div class="rt_content">
+        <div class="page_title">
+            <h2 class="fl">商品分类详情</h2>
+        </div>
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <section>
+                <ul class="ulColumn2">
+                    <li>
+                        <span class="item_name" style="width:120px;">商品分类名称：</span>
+                            <select class="select" name="category">
+
+                                <option value="1"
+                                {% if category_id == 1 %}
+                                    selected = "selected"
+                                {% endif %}
+                                >新鲜水果</option>
+
+                                <option value="2"
+                                {% if category_id == 2 %}
+                                    selected = "selected"
+                                {% endif %}
+                                >海鲜水产</option>
+
+                                <option value="3"
+                                {% if category_id == 3 %}
+                                    selected = "selected"
+                                {% endif %}
+                                >猪牛羊肉</option>
+
+                                <option value="4"
+                                {% if category_id == 4 %}
+                                    selected = "selected"
+                                {% endif %}
+                                >禽类蛋品</option>
+
+                                <option value="5"
+                                {% if category_id == 5 %}
+                                    selected = "selected"
+                                {% endif %}
+                                >新鲜蔬菜</option>
+
+                                <option value="6"
+                                {% if category_id == 6 %}
+                                    selected = "selected"
+                                {% endif %}
+                                >速冻食品</option>
+
+                        </select>
+                    </li>
+
+                    <li>
+                        <span class="item_name" style="width:140px;">上传商品分类首图：</span>
+
+                            <img src="/static/images/{{ category_image }}" style="width: 100px;height: 150px" id="category_img">
+
+                        <label class="uploadImg" style="position: relative;left:150px;top: 55px">
+                             <input type="file" name="category_front_image" accept="image/*" id="zx_img"/>
+                             <span>上传图片</span>
+                        </label>
+
+                        <div  style="position:relative;left:150px;top:15px;width:150px;height:150px;display:none" id="show_image">
+                            <p style="position: relative;">缩略图:</p>
+                        <img src="" id="img_preview" style="width: 100px;height:150px;position: relative;left: 50px;top: -13px" >
+                        </div>
+                        <script>
+                            //上传图片选择文件改变后刷新预览图
+                            $("#zx_img").change(function (e) {
+                            //获取目标文件
+                            var file = e.target.files || e.dataTransfer.files;
+                            //如果目标文件存在
+                            if (file) {
+                            //定义一个文件阅读器
+                            var reader = new FileReader();
+                            //文件装载后将其显示在图片预览里
+                            reader.onload = function () {
+                                $('#show_image').css('display','inline-block')
+                                $("#img_preview").attr("src", this.result);
+                            }
+                            //装载文件
+                            reader.readAsDataURL(file[0]);
+                            }
+                            });
+                        </script>
+                    </li>
+                    <li>
+                        <span class="item_name" style="width:120px;"></span>
+                        <input type="submit" class="link_btn"/>
+                    </li>
+                </ul>
+            </section>
+        </form>
+    </div>
+</section>
+
+    <script>
+        $(function () {
+            $('.select').on('change',function () {
+                var category_id = $('.select').val()
+                var csrf = $('input[name="csrfmiddlewaretoken"]').val()
+                $.ajax({
+                            url: '/admin_goods/category/',
+                            type: 'POST',
+                            dataType: 'json',
+                            headers: {'X-CSRFToken': csrf},
+                            data: {'category_id': category_id},
+                            success: function(data){
+                                if(data.code == '200'){
+                                    $('#category_img').attr('src','/static/images/'+data.category_image)
+                                }
+                            },
+                            error: function(data){
+                                alert('切换失败')
+                            }
+                        })
+            })
+
+        })
+    </script>
+{% endblock %}
